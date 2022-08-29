@@ -19,7 +19,7 @@ resource "aws_security_group" "sec488-sg" {
   vpc_id = aws_vpc.default-vpc.id
 }
 
-resource "aws_security_group_rule" "allow-ssh" {
+resource "aws_security_group_rule" "allow-ssh-ingress" {
 
   cidr_blocks       = ["0.0.0.0/0"]
   from_port         = 22
@@ -29,7 +29,7 @@ resource "aws_security_group_rule" "allow-ssh" {
   security_group_id = aws_security_group.sec488-sg.id
 }
 
-resource "aws_security_group_rule" "allow-http" {
+resource "aws_security_group_rule" "allow-http-ingress" {
 
   cidr_blocks       = ["0.0.0.0/0"]
   from_port         = 80
@@ -39,36 +39,42 @@ resource "aws_security_group_rule" "allow-http" {
   security_group_id = aws_security_group.sec488-sg.id
 }
 
-resource "aws_security_group_rule" "allow-icmp" {
+resource "aws_security_group_rule" "allow-icmp-ingress" {
 
   cidr_blocks       = ["0.0.0.0/0"]
   from_port         = 8
-  to_port           = 0
+  to_port           = 8
   protocol          = "icmp"
   type              = "ingress"
   security_group_id = aws_security_group.sec488-sg.id
 }
 
-/*
-  ingress = [{
-    cidr_blocks = ["0.0.0.0/0"]
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    },
+resource "aws_security_group_rule" "allow-ssh-egress" {
 
-    {
-      cidr_blocks = ["0.0.0.0/0"]
-      from_port   = 80
-      to_port     = 80
-      protocol    = "tcp"
-    },
+  cidr_blocks       = ["0.0.0.0/0"]
+  from_port         = 0
+  to_port           = 65535
+  protocol          = "tcp"
+  type              = "egress"
+  security_group_id = aws_security_group.sec488-sg.id
+}
 
-    {
-      cidr_blocks = ["0.0.0.0/0"]
-      from_port   = 8
-      to_port     = 0
-      protocol    = "icmp"
-    },
-  ]
-  */
+resource "aws_security_group_rule" "allow-http-egress" {
+
+  cidr_blocks       = ["0.0.0.0/0"]
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  type              = "egress"
+  security_group_id = aws_security_group.sec488-sg.id
+}
+
+resource "aws_security_group_rule" "allow-icmp-egress" {
+
+  cidr_blocks       = ["0.0.0.0/0"]
+  from_port         = 0
+  to_port           = 0
+  protocol          = "icmp"
+  type              = "egress"
+  security_group_id = aws_security_group.sec488-sg.id
+}
